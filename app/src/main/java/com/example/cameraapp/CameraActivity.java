@@ -45,6 +45,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class CameraActivity extends AppCompatActivity {
 
     private static final String HEADER = "Original Photo";
@@ -193,6 +199,59 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+    public void saveHashing(byte[] bytes) throws IOException {
+        String hash = encrypt(bytes);
+        pushToBlockchain(hash);
+    }
+
+    public String encrypt(byte[] image) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        md.update(image);
+
+        byte[] encoded_bytes = md.digest();
+
+        String hash = bytesToHex(encoded_bytes);
+
+        return hash;
+    }
+
+    private String bytesToHex(byte[] hash) {
+        StringBuffer hexString = new StringBuffer();
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+    public void pushToBlockchain(String hash) {
+        // replace by push to blockchain
+        //TODO
+
+        // local database
+                /*
+                String database_path = "data/database.txt";
+                BufferedWriter bw = null;
+                try {
+                    bw = new BufferedWriter(new FileWriter(database_path, true));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    bw.append(hash);
+                    bw.append("\n");
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
+    }
 
     protected void createCameraPreview() {
         try {
