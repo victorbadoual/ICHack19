@@ -6,6 +6,7 @@ import './main.html';
 
 Template.hello.onCreated(function helloOnCreated() {
   // counter starts at 0
+
   this.counter = new ReactiveVar(0);
   console.log("hello");
   const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
@@ -26,6 +27,28 @@ Template.hello.helpers({
 Template.hello.events({
   'click button'(event, instance) {
     // increment the counter when button is clicked
-    instance.counter.set(instance.counter.get() + 1);
+    const client = filestack.init('Anq9aCPm7QzOirvCG9gmmz');
+    const options = {
+   uploadInBackground: false,
+   onUploadDone: showFileData
+ };
+
+ client.picker(options).open();
   },
+});
+
+
+Template.addPlayerForm.events({
+    'submit form': function(event){
+      event.preventDefault();
+      var playerNameVar = event.target.playerName.value;
+      console.log(playerNameVar);
+    }
+});
+
+
+Templates.template.events({
+    'change #attachment': function(evt){
+        console.log(evt.files);
+    }
 });

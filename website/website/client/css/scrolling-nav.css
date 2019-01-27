@@ -7,7 +7,7 @@
 
 header {
   padding: 100px 0 60px;
-  background: url('../images/background4.jpg');
+  background: url('/background4.jpg');
   background-repeat: no-repeat;
   background-size: 100%;
   background-size: cover;
