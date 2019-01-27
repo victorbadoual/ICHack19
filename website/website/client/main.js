@@ -1,11 +1,23 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { Web3 } from 'meteor/ethereum:web3';
+import { Meteor } from 'meteor/meteor'
+//import { Assets } from 'meteor/assets';
 
 import './main.html';
 
 Template.hello.onCreated(function helloOnCreated() {
   // counter starts at 0
+
+//var data = Assets.getText("example.txt").toString().split("\n");
+//console.log(data); // File contents as utf8 encoded string.
+
+  //var fileContents = Assets.getText('hash.txt');
+  //const data = Assets.getText('public/data.txt');
+  //console.log("fileContents");
+
+
+
 
   this.counter = new ReactiveVar(0);
   console.log("hello");
@@ -18,11 +30,15 @@ Template.hello.onCreated(function helloOnCreated() {
   console.log(results);
 });
 
-Template.hello.helpers({
-  counter() {
-    return Template.instance().counter.get();
-  },
-});
+
+
+// function httpGet(theUrl)
+// {
+//     var xmlHttp = new XMLHttpRequest();
+//     xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+//     xmlHttp.send( null );
+//     return xmlHttp.responseText;
+// }
 
 Template.hello.events({
   'click button'(event, instance) {
@@ -39,16 +55,29 @@ Template.hello.events({
 
 
 Template.addPlayerForm.events({
-    'submit form': function(event){
+    'submit form': function(){
       event.preventDefault();
-      var playerNameVar = event.target.playerName.value;
-      console.log(playerNameVar);
-    }
-});
 
 
-Templates.template.events({
-    'change #attachment': function(evt){
-        console.log(evt.files);
+
+
+      const Http = new XMLHttpRequest();
+  const url='http://localhost:8000/testexec.php';
+  Http.open("GET", url);
+  Http.send();
+  Http.onreadystatechange=(e)=>{
+  console.log(Http.responseText)
+  }
+
+
+    // var data = httpGet("http://localhost:8000/testexec.php");
+
+    console.log(data);
+
+
+
+    console.log(event.type);
+
+
     }
 });

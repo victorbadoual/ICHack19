@@ -84,10 +84,17 @@
           <br>
           <br>
 
+
+{{> addPlayerForm}}
+
           <!-- <form class="new-task">
             <input type="file" name="pic" accept="image/*">
             <input type="submit" value="Submit">
       </form> -->
+
+<form action = "localhost:8000/testexec.php">
+<input type = "submit" value="Open Script">
+ </form>
 
       <input type="file" accept="image/*" onchange="loadFile(event)">
       <img id="output"/>
@@ -106,9 +113,8 @@
          //document.write(output.src);
           //
         //  event.preventDefault();
-          //console.log("adf");
 
-       
+
       </script>
 
 
@@ -218,19 +224,16 @@
 
 
 </body>
-
 <template name="hello">
   <button>Click Me</button>
   <p>You've pressed the button {{counter}} times.</p>
 </template>
 
 
-
-
 <template name="addPlayerForm">
     <form>
-      <input type="file" name="playerName" accept="image/*">
-      <input type="submit" value="Submit">
+        <input type="text" name="playerName">
+        <input type="submit" value="Add Player">
     </form>
 </template>
 
