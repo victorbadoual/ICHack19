@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class CameraActivity extends AppCompatActivity {
 

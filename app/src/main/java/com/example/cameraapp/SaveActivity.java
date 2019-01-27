@@ -84,32 +84,6 @@ public class SaveActivity extends AppCompatActivity {
         });
     }
 
-    public String encrypt(byte[] image) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        md.update(image);
-
-        byte[] encoded_bytes = md.digest();
-
-        String hash = bytesToHex(encoded_bytes);
-
-        return hash;
-    }
-
-    private String bytesToHex(byte[] hash) {
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
-
     protected void share() {
 
         Drawable mDrawable = imageView.getDrawable();
