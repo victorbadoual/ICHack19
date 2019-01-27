@@ -92,10 +92,11 @@ Template.addPlayerForm.events({
   Http.send();
   Http.onreadystatechange=(e)=>{
   console.log(Http.responseText)
+  //data = Http.responseText
   }
 
 
-    // var data = httpGet("http://localhost:8000/testexec.php");
+    //var data = httpGet("http://localhost:8000/testexec.php");
 
     //console.log(data);
 
