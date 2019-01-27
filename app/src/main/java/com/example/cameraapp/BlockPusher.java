@@ -19,8 +19,8 @@ import java.math.BigInteger;
 public class BlockPusher {
 
     public static void main(String[] args) throws IOException, CipherException {
-        String hash = "DING DING DONG";
-        BlockPusher.pushToBlock(hash);
+        //String hash = "THEO COHEN IS IN THE MASTER OF THE BLOCKCHAIN";
+        //BlockPusher.pushToBlock(hash);
         //System.out.println(retrieveHash("0x44494e472044494e4720444f4e47"));
     }
 
