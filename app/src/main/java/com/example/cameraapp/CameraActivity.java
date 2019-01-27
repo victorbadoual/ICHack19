@@ -42,8 +42,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +83,7 @@ public class CameraActivity extends AppCompatActivity {
 
         textureView = findViewById(R.id.texture);
         assert textureView != null;
-        takePictureButton = findViewById(R.id.btn_takepicture);
+        takePictureButton = findViewById(R.id.takepicture);
         assert takePictureButton != null;
 
         takePictureButton.setOnClickListener(new View.OnClickListener() {
@@ -198,60 +196,6 @@ public class CameraActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SaveActivity.class);
         intent.putExtra(IMAGE_PATH, path);
         startActivity(intent);
-    }
-
-    public void saveHashing(byte[] bytes) throws IOException {
-        String hash = encrypt(bytes);
-        pushToBlockchain(hash);
-    }
-
-    public String encrypt(byte[] image) {
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        md.update(image);
-
-        byte[] encoded_bytes = md.digest();
-
-        String hash = bytesToHex(encoded_bytes);
-
-        return hash;
-    }
-
-    private String bytesToHex(byte[] hash) {
-        StringBuffer hexString = new StringBuffer();
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
-
-    public void pushToBlockchain(String hash) {
-        // replace by push to blockchain
-        //TODO
-
-        // local database
-                /*
-                String database_path = "data/database.txt";
-                BufferedWriter bw = null;
-                try {
-                    bw = new BufferedWriter(new FileWriter(database_path, true));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    bw.append(hash);
-                    bw.append("\n");
-                    bw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
     }
 
     protected void createCameraPreview() {

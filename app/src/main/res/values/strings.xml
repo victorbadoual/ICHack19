@@ -3,11 +3,7 @@
     <string name="take_picture">Take picture</string>
     <string name="action_settings">Settings</string>
     <string name="share">Share</string>
-    <string name="email">Email</string>
-    <string name="facebook">Facebook</string>
-    <string name="instagram">Instagram</string>
-    <string name="snapchat">Snapchat</string>
-    <string name="title_activity_save">Save an Image</string>
+    <string name="title_activity_save">Share/Save Image</string>
     <string name="image">Verified Image</string>
     <string name="save">Save</string>
     <string name="take_new_picture">Take New Picture</string>
