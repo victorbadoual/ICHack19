@@ -6,10 +6,13 @@ import { Meteor } from 'meteor/meteor'
 
 import './main.html';
 
-// BLOCKCHAIN //
+checkPic();
 
-picHash = "f64d7985e1e5837a603ae7a04fd24cef4ff221d179318d4589b9bb50d04ec24a";
-getConfirmations(picHash);
+// BLOCKCHAIN //
+function checkPic() {
+  picHash = "f64d7985e1e5837a603ae7a04fd24cef4ff221d179318d4589b9bb50d04ec24a";
+  getConfirmations(picHash);
+}
 
 async function getConfirmations(picHash) {
   try {
@@ -94,7 +97,7 @@ Template.addPlayerForm.events({
 
     // var data = httpGet("http://localhost:8000/testexec.php");
 
-    console.log(data);
+    //console.log(data);
 
 
 
