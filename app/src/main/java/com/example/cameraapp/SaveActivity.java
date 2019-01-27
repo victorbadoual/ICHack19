@@ -9,13 +9,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class SaveActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private File imageFile;
+    private boolean saved = false;
     private Button shareButton;
     private Button saveButton;
     private Button newPicButton;
@@ -29,6 +35,7 @@ public class SaveActivity extends AppCompatActivity {
 
         // Get intent that started this activity (camera).
         Bundle extras = getIntent().getExtras();
+        assert extras != null;
         String imagePath = extras.getString(CameraActivity.IMAGE_PATH);
         assert imagePath != null;
 
@@ -38,7 +45,7 @@ public class SaveActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imageView = findViewById(R.id.imageView);
             imageView.setImageBitmap(bitmap);
-
+            imageView.setRotation(90);
         }
 
         shareButton = findViewById(R.id.share);
@@ -75,30 +82,15 @@ public class SaveActivity extends AppCompatActivity {
 
     }
 
-//    final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
-
-//    ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-//    byte[] bytes = new byte[buffer.capacity()];
-//                        buffer.get(bytes);
-//    save(bytes);
-
-//    private void save(byte[] bytes) throws IOException {
-//        OutputStream output = null;
-//        try {
-//            output = new FileOutputStream(file);
-//            output.write(bytes);
-//        } finally {
-//            if (null != output) {
-//                output.close();
-//            }
-//        }
-//    }
-
     protected void saveImage() {
-
+        saved = true;
+        Toast.makeText(SaveActivity.this, "Saved Image: " + imageFile, Toast.LENGTH_SHORT).show();
     }
 
     protected void takeNewPic() {
+        if (!saved) {
+            boolean deleted = imageFile.delete();
+        }
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
