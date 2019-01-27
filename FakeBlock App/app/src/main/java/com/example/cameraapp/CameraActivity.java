@@ -27,7 +27,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -44,6 +43,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -52,10 +52,10 @@ public class CameraActivity extends AppCompatActivity {
     private static final String HEADER = "Original Photo";
     public static final String IMAGE_PATH = "com.example.cameraapp.IMAGE_PATH";
 
-    private Button takePictureButton;
     private TextureView textureView;
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
         ORIENTATIONS.append(Surface.ROTATION_90, 0);
@@ -63,10 +63,9 @@ public class CameraActivity extends AppCompatActivity {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-    private String cameraId;
-    protected CameraDevice cameraDevice;
-    protected CameraCaptureSession cameraCaptureSessions;
-    protected CaptureRequest.Builder captureRequestBuilder;
+    private CameraDevice cameraDevice;
+    private CameraCaptureSession cameraCaptureSessions;
+    private CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
 
     private static final int REQUEST_CAMERA_PERMISSION = 200;
@@ -81,21 +80,15 @@ public class CameraActivity extends AppCompatActivity {
 
         textureView = findViewById(R.id.texture);
         assert textureView != null;
-        takePictureButton = findViewById(R.id.takepicture);
+        Button takePictureButton = findViewById(R.id.takepicture);
         assert takePictureButton != null;
 
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+        takePictureButton.setOnClickListener(v -> takePicture());
 
     }
 
-    protected void takePicture() {
-        if(null == cameraDevice) {
-            Log.e(HEADER, "cameraDevice is null");
+    private void takePicture() {
+        if (null == cameraDevice) {
             return;
         }
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -123,7 +116,7 @@ public class CameraActivity extends AppCompatActivity {
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
             Long tsLong = System.currentTimeMillis() / 1000;
             String ts = tsLong.toString();
-            final String path  = Environment.getExternalStorageDirectory() + "/" + ts + ".jpg";
+            final String path = Environment.getExternalStorageDirectory() + "/" + ts + ".jpg";
             final File file = new File(path);
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
@@ -196,7 +189,7 @@ public class CameraActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    protected void createCameraPreview() {
+    private void createCameraPreview() {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
             assert texture != null;
@@ -204,7 +197,7 @@ public class CameraActivity extends AppCompatActivity {
             Surface surface = new Surface(texture);
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             captureRequestBuilder.addTarget(surface);
-            cameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback(){
+            cameraDevice.createCaptureSession(Collections.singletonList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
                     //The camera is already closed
@@ -215,6 +208,7 @@ public class CameraActivity extends AppCompatActivity {
                     cameraCaptureSessions = cameraCaptureSession;
                     updatePreview();
                 }
+
                 @Override
                 public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
                     Toast.makeText(CameraActivity.this, "Configuration change", Toast.LENGTH_SHORT).show();
@@ -228,9 +222,8 @@ public class CameraActivity extends AppCompatActivity {
 
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-        Log.e(HEADER, "camera is open");
         try {
-            cameraId = manager.getCameraIdList()[0];
+            String cameraId = manager.getCameraIdList()[0];
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
@@ -245,13 +238,12 @@ public class CameraActivity extends AppCompatActivity {
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
-        Log.e(HEADER, "openCamera");
     }
 
 
-    protected void updatePreview() {
-        if(null == cameraDevice) {
-            Log.e(HEADER, "updatePreview error, return");
+    private void updatePreview() {
+        if (null == cameraDevice) {
+            openCamera();
         }
         captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
         try {
@@ -278,7 +270,6 @@ public class CameraActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(HEADER, "onResume");
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
@@ -289,7 +280,6 @@ public class CameraActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        Log.e(HEADER, "onPause");
         cameraDevice.close();
         stopBackgroundThread();
         super.onPause();
@@ -297,13 +287,13 @@ public class CameraActivity extends AppCompatActivity {
 
 
     // Determine behaviour of background thread.
-    protected void startBackgroundThread() {
+    private void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
 
-    protected void stopBackgroundThread() {
+    private void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
             mBackgroundThread.join();
@@ -320,7 +310,7 @@ public class CameraActivity extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(CameraActivity.this, "Captured Image" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(CameraActivity.this, "Captured Image", Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -329,7 +319,6 @@ public class CameraActivity extends AppCompatActivity {
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(@NonNull CameraDevice camera) {
-            Log.e(HEADER, "onOpened");
             cameraDevice = camera;
             createCameraPreview();
         }
@@ -354,7 +343,7 @@ public class CameraActivity extends AppCompatActivity {
 
 
     // Inner class to changes to the surface texture displaying the camera
-    TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+    private final TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
         public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
             // Open the camera here

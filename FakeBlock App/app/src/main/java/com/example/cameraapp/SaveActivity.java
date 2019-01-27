@@ -11,22 +11,16 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import org.web3j.crypto.CipherException;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class SaveActivity extends AppCompatActivity {
 
@@ -49,7 +43,7 @@ public class SaveActivity extends AppCompatActivity {
 
         imageFile = new File(imagePath);
 
-        if(imageFile.exists()){
+        if (imageFile.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
             imageView = findViewById(R.id.imageView);
             imageView.setImageBitmap(bitmap);
@@ -64,29 +58,14 @@ public class SaveActivity extends AppCompatActivity {
         assert newPicButton != null;
 
 
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                share();
-            }
-        });
+        shareButton.setOnClickListener(v -> share());
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveImage();
-            }
-        });
+        saveButton.setOnClickListener(v -> saveImage());
 
-        newPicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takeNewPic();
-            }
-        });
+        newPicButton.setOnClickListener(v -> takeNewPic());
     }
 
-    protected void share() {
+    private void share() {
 
         Drawable mDrawable = imageView.getDrawable();
         Bitmap bitmap = ((BitmapDrawable) mDrawable).getBitmap();
@@ -107,19 +86,19 @@ public class SaveActivity extends AppCompatActivity {
 
         sharingIntent.setType("plain/text");
         String shareBody = "This image can be verified to it's 100% original content thanks to " +
-                "FakeBlock.";
+                "TrueBlock.";
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Check out this genuine pic!");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
-    protected void saveImage() {
+    private void saveImage() {
         saved = true;
         Toast.makeText(SaveActivity.this, "Saved Image: " + imageFile, Toast.LENGTH_SHORT).show();
         uploadToBlockChain();
     }
 
-    protected void takeNewPic() {
+    private void takeNewPic() {
         if (!saved) {
             boolean deleted = imageFile.delete();
         }
@@ -140,9 +119,8 @@ public class SaveActivity extends AppCompatActivity {
                 BlockPusher.pushToBlock(hash);
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (CipherException e) {
-                e.printStackTrace();
             }
         }
     }
+
 }

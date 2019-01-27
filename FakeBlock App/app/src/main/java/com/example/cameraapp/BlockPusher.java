@@ -1,14 +1,11 @@
 package com.example.cameraapp;
 
-import android.net.Uri;
-import android.os.Environment;
 import android.os.StrictMode;
 
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
-import org.web3j.crypto.WalletUtils;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
@@ -17,14 +14,12 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Numeric;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.URI;
 
-public class BlockPusher {
+class BlockPusher {
 
-    public static void pushToBlock(String hash) throws IOException, CipherException {
+    public static void pushToBlock(String hash) throws IOException {
 
         Web3j web3j = Web3j.build(new HttpService("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
         Credentials credentials = Credentials.create("f9f947ac8302d619d45515e78008358206126ee6730a6f8d443801b1278227e7");
@@ -36,7 +31,7 @@ public class BlockPusher {
         EthGetTransactionCount ethGetTransactionCount;
         try {
             // get the next available nonce
-             ethGetTransactionCount = web3j.ethGetTransactionCount(
+            ethGetTransactionCount = web3j.ethGetTransactionCount(
                     credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
         } finally {
             StrictMode.setThreadPolicy(oldPolicy);
@@ -71,9 +66,9 @@ public class BlockPusher {
         web3j.shutdown();
     }
 
-    public static String ASCIItoHEX(String ascii) {
+    private static String ASCIItoHEX(String ascii) {
         // Initialize final String
-        String hex = "";
+        StringBuilder hex = new StringBuilder();
 
         // Make a loop to iterate through
         // every character of ascii string
@@ -93,10 +88,10 @@ public class BlockPusher {
 
             // add this hexadecimal value
             // to final string.
-            hex += part;
+            hex.append(part);
         }
         // return the final string hex
-        return hex;
+        return hex.toString();
     }
     /*
     public static void lookUp(Web3j web3j) {

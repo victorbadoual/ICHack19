@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class ImageHasher {
+class ImageHasher {
 
-    protected static String getHashForImage(File imageFile) throws IOException {
+    static String getHashForImage(File imageFile) throws IOException {
         byte bytes[] = new byte[(int) imageFile.length()];
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(imageFile));
         DataInputStream dis = new DataInputStream(bis);
@@ -30,16 +30,14 @@ public class ImageHasher {
 
         byte[] encoded_bytes = md.digest();
 
-        String hash = bytesToHex(encoded_bytes);
-
-        return hash;
+        return bytesToHex(encoded_bytes);
     }
 
     private static String bytesToHex(byte[] hash) {
         StringBuffer hexString = new StringBuffer();
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) hexString.append('0');
+            if (hex.length() == 1) hexString.append('0');
             hexString.append(hex);
         }
         return hexString.toString();
