@@ -6,39 +6,7 @@ import { Meteor } from 'meteor/meteor'
 
 import './main.html';
 
-Template.hello.onCreated(function helloOnCreated() {
-  // counter starts at 0
 
-//var data = Assets.getText("example.txt").toString().split("\n");
-//console.log(data); // File contents as utf8 encoded string.
-
-  //var fileContents = Assets.getText('hash.txt');
-  //const data = Assets.getText('public/data.txt');
-  //console.log("fileContents");
-
-
-
-
-  this.counter = new ReactiveVar(0);
-  console.log("hello");
-  const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
-  options = {from: "0x9be463c5932bdcf1e8304b4386e51a1c9a46052a"};
-  var filter = web3.eth.filter(options);
-  var results = filter.get(function (error, log) {
-	 console.log(log); //  {"address":"0x0000000000000000000000000000000000000000", "data":"0x0000000000000000000000000000000000000000000000000000000000000000", ...}
-	});
-  console.log(results);
-});
-
-
-
-// function httpGet(theUrl)
-// {
-//     var xmlHttp = new XMLHttpRequest();
-//     xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
-//     xmlHttp.send( null );
-//     return xmlHttp.responseText;
-// }
 
 Template.hello.events({
   'click button'(event, instance) {
@@ -53,22 +21,85 @@ Template.hello.events({
   },
 });
 
+var data;
 
 Template.addPlayerForm.events({
     'submit form': function(){
       event.preventDefault();
 
+      var http = new XMLHttpRequest();
+      http.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          checkPic(this.responseText);
+        }
+      }
 
-
-
-      const Http = new XMLHttpRequest();
-  const url='http://localhost:8000/testexec.php';
-  Http.open("GET", url);
-  Http.send();
-  Http.onreadystatechange=(e)=>{
-  console.log(Http.responseText)
-  //data = Http.responseText
+      http.open("GET", "http://localhost:8000/testexec.php", true);
+      http.send();
   }
+});
+
+
+// BLOCKCHAIN //
+function checkPic(data) {
+  console.log(data);
+  picHash = data;
+  getConfirmations(picHash);
+}
+
+async function getConfirmations(picHash) {
+  try {
+    const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
+    account = "0x9be463c5932bdcf1e8304b4386e51a1c9a46052a";
+
+    isMatched = getTransaction(account, web3.eth.getBlock('latest').number, picHash, web3.eth);
+  }
+  catch (error) {
+    console.log(error);
+  }
+}
+
+function getTransaction(myaccount, endBlockNumber, picHash, eth) {
+  console.log("Using endBlockNumber: " + endBlockNumber);
+  startBlockNumber = endBlockNumber - 100;
+  console.log("Using startBlockNumber: " + startBlockNumber);
+  console.log("Searching for transactions to/from account \"" + myaccount + "\" within blocks "  + startBlockNumber + " and " + endBlockNumber);
+
+  for (var i = endBlockNumber; i >= startBlockNumber; i--) {
+    if (i % 10 == 0) {
+      console.log("Searching block " + i);
+    }
+    var block = eth.getBlock(i, true);
+    if (block != null && block.transactions != null) {
+      for (var j = 0; j < block.transactions.length; j++) {
+        e = block.transactions[j];
+        if (myaccount == e.from && myaccount == e.to && e.input == ASCIItoHEX(picHash)) {
+          console.log("Picture certified");
+          return true;
+        }
+      }
+    }
+  }
+  console.log("We haven't found an authentic matching picture.");
+  console.log("You're picture is a FAKE!");
+  return false;
+}
+
+function ASCIItoHEX(ascii) {
+    hex = "";
+    for (i = 0; i < ascii.length; i++) {
+        ch = ascii.charCodeAt(i);
+        part = ch.toString(16);
+        hex += part;
+    }
+    return "0x" + hex;
+}
+
+
+
+
+
+
 
 
     //var data = httpGet("http://localhost:8000/testexec.php");
@@ -78,7 +109,3 @@ Template.addPlayerForm.events({
 
 
     console.log(event.type);
-
-
-    }
-});
