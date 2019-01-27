@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
+import org.web3j.crypto.CipherException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -93,6 +95,7 @@ public class SaveActivity extends AppCompatActivity {
         Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
                 bitmap.getHeight(), matrix, true);
 
+        uploadToBlockChain();
 
         String path = MediaStore.Images.Media.insertImage(getContentResolver(), rotatedBitmap, "Image",
                 null);
@@ -113,6 +116,7 @@ public class SaveActivity extends AppCompatActivity {
     protected void saveImage() {
         saved = true;
         Toast.makeText(SaveActivity.this, "Saved Image: " + imageFile, Toast.LENGTH_SHORT).show();
+        uploadToBlockChain();
     }
 
     protected void takeNewPic() {
@@ -123,4 +127,22 @@ public class SaveActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    private void uploadToBlockChain() {
+        String hash = null;
+        try {
+            hash = ImageHasher.getHashForImage(imageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (hash != null) {
+            try {
+                BlockPusher.pushToBlock(hash);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (CipherException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

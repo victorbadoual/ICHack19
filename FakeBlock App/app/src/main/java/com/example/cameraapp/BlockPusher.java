@@ -1,5 +1,9 @@
 package com.example.cameraapp;
 
+import android.net.Uri;
+import android.os.Environment;
+import android.os.StrictMode;
+
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.RawTransaction;
@@ -13,26 +17,30 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Numeric;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.URI;
 
 public class BlockPusher {
-
-    public static void main(String[] args) throws IOException, CipherException {
-        //String hash = "THEO COHEN IS IN THE MASTER OF THE BLOCKCHAIN";
-        //BlockPusher.pushToBlock(hash);
-        //System.out.println(retrieveHash("0x44494e472044494e4720444f4e47"));
-    }
 
     public static void pushToBlock(String hash) throws IOException, CipherException {
 
         Web3j web3j = Web3j.build(new HttpService("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
+        Credentials credentials = Credentials.create("f9f947ac8302d619d45515e78008358206126ee6730a6f8d443801b1278227e7");
 
-        Credentials credentials = WalletUtils.loadCredentials("helloworld", "app/src/main/wallet_file/wallet_file");
-
-        // get the next available nonce
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-                credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
+        StrictMode.ThreadPolicy oldPolicy = StrictMode.getThreadPolicy();
+        StrictMode.ThreadPolicy policy =
+                new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        EthGetTransactionCount ethGetTransactionCount;
+        try {
+            // get the next available nonce
+             ethGetTransactionCount = web3j.ethGetTransactionCount(
+                    credentials.getAddress(), DefaultBlockParameterName.LATEST).send();
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy);
+        }
         BigInteger nonce = ethGetTransactionCount.getTransactionCount();
         BigInteger gas_price = DefaultGasProvider.GAS_PRICE; //Convert.toWei("0.000021", Convert.Unit.GWEI).toBigInteger();
         BigInteger gas_limit = DefaultGasProvider.GAS_LIMIT; //Convert.toWei("0.000021", Convert.Unit.GWEI).toBigInteger();;
@@ -46,7 +54,17 @@ public class BlockPusher {
         // sign & send our transaction
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
         String hexValue = Numeric.toHexString(signedMessage);
-        EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
+
+        oldPolicy = StrictMode.getThreadPolicy();
+        policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        EthSendTransaction ethSendTransaction;
+        try {
+            ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
+        } finally {
+            StrictMode.setThreadPolicy(oldPolicy);
+        }
+
         System.out.println(ethSendTransaction.getTransactionHash());
 
 
