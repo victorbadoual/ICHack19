@@ -8,7 +8,7 @@
   <!-- <meta name="description" content=""/>
   <meta name="author" content=""/> -->
 
-  <title>FakeBlock</title>
+  <title>FakeBook</title>
 
   <!-- Bootstrap core CSS -->
   <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -25,7 +25,7 @@
   <!-- Navigation -->
   <nav id="mainNav" class="navbar navbar-expand-lg navbar-light fixed-top bg-lightblue">
     <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">FakeBlock</a>
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">FakeBook</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
         aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -70,7 +70,7 @@
 
   <header class="text-white">
     <div class="container text-center">
-      <h1 class="display-3">FakeBlock</h1>
+      <h1 class="display-3">FakeBook</h1>
     </div>
   </header>
 
@@ -84,6 +84,20 @@
           <br>
           <br>
 
+          <form id="ff" method="post" enctype="multipart/form-data">
+              <input type="file" name="files[]" multiple>
+              <input type="submit" value="Upload File" name="submit">
+          </form>
+
+          <br>
+          <br>
+
+          <form action = "localhost:8000/testexec.php">
+          <input type = "submit" value="Calculate hash">
+           </form>
+
+           <br>
+           <br>
 
 {{> addPlayerForm}}
 
@@ -92,17 +106,11 @@
             <input type="submit" value="Submit">
       </form> -->
 
-<form action = "localhost:8000/testexec.php">
-<input type = "submit" value="Open Script">
- </form>
 
 
 
 
- <form id="ff" method="post" enctype="multipart/form-data">
-     <input type="file" name="files[]" multiple>
-     <input type="submit" value="Upload File" name="submit">
- </form>
+
 <script>
 const url = 'http://localhost:5000/process.php';
 const form = document.querySelector('#ff');
@@ -136,11 +144,35 @@ form.addEventListener('submit', e => {
     </div>
   </section>
 
+  <section id="added_pic" style = "display:none" class="bg-light">
+   <div class="container">
+     <div class="row">
+       <div class="col-lg-8 mx-auto">
+         <h2>Spotted</h2>
+         <br>
+         <br>
+         <br>
+         <figure>
+           <img id="pic_toset" src="/image.jpeg" class="img-fluid" alt="blockcare" width="700" height="100">
+           <figcaption class="figure-caption text-center">
+           </figcaption>
+         </figure>
+         <figure>
+           <img id="isTrue" src="/safe.png" class="img-fluid" alt="blockcare" width="100" height="100">
+           <figcaption class="figure-caption text-center">
+           </figcaption>
+         </figure>
+
+       </div>
+     </div>
+   </div>
+ </section>
+
   <section id="intro" class="bg-light">
     <div class="container">
       <div class="row">
         <div class="col-lg-8 mx-auto">
-          <h2>Dat ass</h2>
+          <h2>Not very sneaky</h2>
           <br>
           <br>
           <br>
@@ -218,7 +250,7 @@ form.addEventListener('submit', e => {
   <!-- Footer -->
   <footer class="py-5 bg-dark">
     <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; FakeBlock</p>
+      <p class="m-0 text-center text-white">Copyright &copy; FakeBook</p>
     </div>
     <!-- /.container -->
   </footer>
@@ -243,8 +275,7 @@ form.addEventListener('submit', e => {
 
 <template name="addPlayerForm">
     <form>
-        <input type="text" name="playerName">
-        <input type="submit" value="Add Player">
+        <input type="submit" value="Search on the blockchain!">
     </form>
 </template>
 

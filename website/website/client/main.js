@@ -51,8 +51,19 @@ async function getConfirmations(picHash) {
   try {
     const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/319b395c598f44f09fca038a955ee367"));
     account = "0x9be463c5932bdcf1e8304b4386e51a1c9a46052a";
-
     isMatched = getTransaction(account, web3.eth.getBlock('latest').number, picHash, web3.eth);
+
+    if (isMatched) {
+     document.getElementbyID("pic_toset").src = "/image.jpeg";
+     document.getElementbyID("added_pic").style.display = "";
+
+   }
+   else {
+     document.getElementbyID("pic_toset").src = "/image.jpeg";
+     document.getElementbyID("added_pic").style.display = "";
+     document.getElementbyID("isTrue").src = "/fake.jpeg";
+   }
+
   }
   catch (error) {
     console.log(error);
